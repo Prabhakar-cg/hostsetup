@@ -1,2 +1,49 @@
 ---
-# tasks file for testrole
+- name: Update centos
+  ansible.builtin.package:
+    name: '*'
+    state: latest
+    update_only: true
+
+- name: Install necessary packages
+  ansible.builtin.dnf:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - python39
+    - python39-pip
+    - virtualenv
+
+- name: Create installation directory
+  ansible.builtin.file:
+    path: "{{ installation_dir }}"
+    state: directory
+    mode: '750'
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+
+- name: Create python virtualenv
+  ansible.builtin.command: "python3.9 -m venv {{ installation_dir }}/language_model"
+  changed_when: 0
+  become_method: sudo
+  become_user: "{{ app_user }}"
+
+- name: Install pip packages
+  ansible.builtin.pip:
+    name:
+      - tensorflow
+      - scikit-learn
+      - pandas
+      - numpy
+    state: present
+    virtualenv: "{{ installation_dir }}/language_model"
+  become_method: sudo
+  become_user: "{{ app_user }}"
+
+- name: Create installation directory
+  ansible.builtin.file:
+    path: "{{ installation_dir }}"
+    state: directory
+    mode: '750'
+    owner: vagrant
+    group: "{{ app_group }}"

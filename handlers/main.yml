@@ -1,2 +1,13 @@
 ---
 # handlers file for testrole
+# handlers:
+    # - name: Display Operating system version
+    #   ansible.builtin.debug:
+    #   var: ansible_distribution_version
+
+- name: Reboot system
+  ansible.builtin.reboot:
+       reboot_timeout: 300
+       pre_reboot_delay: 0
+       post_reboot_delay: 30
+  when: available_updates | changed

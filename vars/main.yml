@@ -1,2 +1,4 @@
 ---
-# vars file for testrole
+app_user: vagrant
+app_group: vagrant
+installation_dir: /data
